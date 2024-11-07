@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>最漂亮的萱萱</title>
+    <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
+    <style>
+        /* Fullscreen background image */
+        body {
+            margin: 0;
+            overflow: hidden;
+            /*background: url('./images/bg3.jpg') no-repeat center center fixed; */
+            background-size: cover;
+            background-color: rgba(0, 0, 0, 0.9);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* Stars Container */
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* So that the stars won't interfere with interactions */
+        }
+
+        /* Individual star styling */
+        .star {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0; /* Initially invisible */
+            animation: blink 2s infinite alternate;
+        }
+
+        /* Keyframes for star blinking effect */
+        @keyframes blink {
+            0% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* Image container centered with flex layout and gap */
+        #imgWrap {
+            width: 650px; 
+            height: 650px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 45px; 
+            justify-content: center;
+            margin: 100px auto;
+            perspective: 800px;
+        }
+
+        /* Individual images with transition effects */
+        #imgWrap img {
+            width: 128px;
+            height: 128px;
+            transition: transform 1s, opacity 1s;
+            opacity: 0;
+            border-radius: 20px; 
+            object-fit: cover;
+        }
+    </style>
+    <audio id="music" loop autoplay>
+        <source src="./sound.mp3">
+    </audio>
+    <script>
+        // 播放音乐
+        document.addEventListener('click', function() {
+            var audio = document.getElementById('music');
+            audio.play().catch(function(error) {
+                console.error('自动播放音乐失败:', error);
+            });
+        });
+
+        // Star generation function
+        function generateStars() {
+            const starContainer = document.createElement('div');
+            starContainer.classList.add('stars');
+            document.body.appendChild(starContainer);
+
+            const numberOfStars = 200; // You can adjust the number of stars
+
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                // Randomly position the stars
+                const xPos = Math.random() * window.innerWidth;
+                const yPos = Math.random() * window.innerHeight;
+
+                // Random size for stars (between 2px and 5px)
+                const size = Math.random() * 3 + 2;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+
+                // Set position and append the star
+                star.style.left = `${xPos}px`;
+                star.style.top = `${yPos}px`;
+
+                starContainer.appendChild(star);
+            }
+        }
+
+        // Initialize star generation
+        window.onload = function() {
+            generateStars();
+
+            // Refresh images every 5 to 7 seconds
+            setInterval(refreshImages, Math.random() * 2000 + 3000);
+        };
+
+        function refreshImages() {
+            const imgWrap = document.getElementById("imgWrap") || document.createElement("div");
+            imgWrap.id = "imgWrap";
+            imgWrap.innerHTML = ""; // Clear previous images
+
+            // Generate 16 unique random image indexes
+            const totalImages = 158;
+            const imagesToShow = 16;
+            const randomIndexes = getRandomIndexes(imagesToShow, totalImages);
+
+            // Create and animate images
+            randomIndexes.forEach(index => {
+                const img = document.createElement("img");
+                img.src = `images/${index}.jpg`;
+                imgWrap.appendChild(img);
+            });
+
+            // Ensure the container is in the DOM
+            if (!document.body.contains(imgWrap)) {
+                document.body.appendChild(imgWrap);
+            }
+
+            animateImages();
+        }
+
+        // Generate unique random numbers for selecting images
+        function getRandomIndexes(count, max) {
+            const indexes = new Set();
+            while (indexes.size < count) {
+                indexes.add(Math.floor(Math.random() * max) + 1);
+            }
+            return Array.from(indexes);
+        }
+
+        function animateImages() {
+            const imgs = document.querySelectorAll("#imgWrap img");
+
+            imgs.forEach((img, i) => {
+                setTimeout(() => {
+                    motion(img, 'scale(1.5)', 'scale(1)', 500, () => {
+                        img.style.opacity = 1; // Ensure opacity is set
+                    });
+                }, Math.random() * 1000); // Random delay for each image
+            });
+        }
+
+        function motion(element, startTransform, endTransform, duration, callback) {
+            element.style.transition = `transform ${duration}ms, opacity ${duration}ms`;
+            element.style.transform = startTransform;
+            element.style.opacity = 1;
+
+            setTimeout(() => {
+                element.style.transform = endTransform;
+                if (callback) callback();
+            }, duration);
+        }
+    </script>
+</head>
+<body>
+</body>
+</html>
