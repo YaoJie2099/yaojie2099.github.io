@@ -122,7 +122,7 @@
             generateStars();
 
             // Refresh images every 5 to 7 seconds
-            setInterval(refreshImages, Math.random() * 2000 + 3000);
+            setInterval(refreshImages, Math.random() * 2000 + 5000);
         };
 
         function refreshImages() {
@@ -132,7 +132,7 @@
 
             // Generate 16 unique random image indexes
             const totalImages = 158;
-            const imagesToShow = 16;
+            const imagesToShow = 32;
             const randomIndexes = getRandomIndexes(imagesToShow, totalImages);
 
             // Create and animate images
